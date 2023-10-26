@@ -1,0 +1,8 @@
+###
+GET http://localhost:8080/api/v1/user/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYnJvbSIsImlkIjoiMjI1NTFhZWYtN2Y2Ni00NDc2LWFkNWEtNjI5NzdiYjZmMmI0IiwiZXhwIjoxNjk3OTA4NzA2fQ.5BAvWkPQ2m45v2vy_wPj5LRoOzBHUa2rmGjFcvGwHR0
+
+###
+GET http://localhost:8080/api/v1/user/get-all-workspaces
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYnJvbTEiLCJpZCI6IjVmOWQ4YjVmLWMyNGMtNGI1MS04ZDRiLWEyNzU4YmMyNzA1YSIsImV4cCI6MTY5ODE2MjM5Nn0.x8S0iwTtRnQlUBv__4yw3GBRMW-xdpbnRkNoqjRgC3Y
+

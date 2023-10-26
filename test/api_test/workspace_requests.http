@@ -1,0 +1,28 @@
+###
+POST http://localhost:8080/api/v1/workspace/create
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYnJvbSIsImlkIjoiMjI1NTFhZWYtN2Y2Ni00NDc2LWFkNWEtNjI5NzdiYjZmMmI0IiwiZXhwIjoxNjk3OTkxMTY4fQ.Sg8iuunjZO1o6j-CcqJje1bAnq2lHsNZTqzEJuWEKGE
+
+name=test
+
+###
+POST http://localhost:8080/api/v1/workspace/804c65a4-9449-45b1-aa0c-e210d4780880/file/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYnJvbSIsImlkIjoiMjI1NTFhZWYtN2Y2Ni00NDc2LWFkNWEtNjI5NzdiYjZmMmI0IiwiZXhwIjoxNjk3OTkxMTY4fQ.Sg8iuunjZO1o6j-CcqJje1bAnq2lHsNZTqzEJuWEKGE
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="filename"
+Content-Type: text/plain
+
+test.pdf
+--WebAppBoundary
+Content-Disposition: form-data; name="size"
+Content-Type: text/plain
+
+171618
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="test.pdf"
+Content-Type: multipart/form-data
+
+< ./test.pdf
+--WebAppBoundary--

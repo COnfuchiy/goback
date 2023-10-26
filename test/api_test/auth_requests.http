@@ -1,0 +1,16 @@
+POST http://localhost:8080/api/v1/login
+Content-Type: application/x-www-form-urlencoded
+
+email=fdvfdsvа@ffdb.re&password=123
+
+###
+POST http://localhost:8080/api/v1/register
+Content-Type: application/x-www-form-urlencoded
+
+email=fdvfdsvа@ffdb.re&username=brom1&password=123
+
+###
+POST http://localhost:8080/api/v1/refresh
+Content-Type: application/x-www-form-urlencoded
+
+refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyNTUxYWVmLTdmNjYtNDQ3Ni1hZDVhLTYyOTc3YmI2ZjJiNCIsImV4cCI6MTY5ODUwNjIzM30.qUd1cGTGFmu4haoUVsfvPatDEZiSBQ9BiZcEZ4QqWVk
