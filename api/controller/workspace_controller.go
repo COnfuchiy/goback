@@ -39,8 +39,8 @@ func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 		return
 	}
 
-	user, isUser := userObject.(*entity.User)
-	if !isUser {
+	user, _ := userObject.(*entity.User)
+	if reflect.ValueOf(user).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 		return
 	}
@@ -66,8 +66,8 @@ func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 		return
 	}
 
-	workspace, isWorkspace := workspaceObject.(*entity.Workspace)
-	if !isWorkspace {
+	workspace, _ := workspaceObject.(*entity.Workspace)
+	if reflect.ValueOf(workspace).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "Workspace is not type of " + reflect.TypeOf(entity.Workspace{}).String()})
 		return
 	}
@@ -83,20 +83,20 @@ func (c WorkspaceController) GetAllFilesHistories(context *gin.Context) {
 		return
 	}
 
-	workspace, isWorkspace := workspaceObject.(*entity.Workspace)
-	if !isWorkspace {
+	workspace, _ := workspaceObject.(*entity.Workspace)
+	if reflect.ValueOf(workspace).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "Workspace is not type of " + reflect.TypeOf(entity.Workspace{}).String()})
 		return
 	}
 
-	currentPage := 0
+	currentPage := 1
 	currentPageAsString := context.Param("page")
 
 	if currentPageAsString != "" {
 		var castError error
 		currentPage, castError = strconv.Atoi(currentPageAsString)
 		if castError != nil {
-			currentPage = 0
+			currentPage = 1
 		}
 	}
 

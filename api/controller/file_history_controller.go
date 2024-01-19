@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"goback/api/response"
 	"goback/mapper"
 	"goback/services"
@@ -20,12 +21,17 @@ func NewFileHistoryController(fileHistoryService services.IFileHistoryService, f
 func (c FileHistoryController) GetFileHistory(context *gin.Context) {
 
 	fileHistoryID := context.Param("file_history_id")
-	if fileHistoryID == "" {
-		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "File ID is not specified"})
+	if fileHistoryID != "" {
+		if _, err := uuid.Parse(fileHistoryID); err != nil {
+			context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "File history ID is not uuid"})
+			return
+		}
+	} else {
+		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "File history ID is not specified"})
 		return
 	}
 
-	fileHistory, err := c.fileHistoryService.GetFileHistoryFromContext(fileHistoryID)
+	fileHistory, err := c.fileHistoryService.GetFromContext(fileHistoryID)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, response.ErrorResponse{Message: err.Error()})
 		return

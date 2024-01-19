@@ -8,7 +8,7 @@ import (
 
 type IFileMapper interface {
 	ToFileResponse(file *entity.File) *response.FileResponse
-	FromCreateFileResponce(fileRequest request.CreateFileRequest) entity.File
+	FromCreateFileResponse(fileRequest *request.CreateFileRequest) entity.File
 	ToDownloadFileLinkResponse(file *entity.File) *response.DownloadFileLinkResponse
 }
 
@@ -36,7 +36,7 @@ func (m FileMapper) ToDownloadFileLinkResponse(file *entity.File) *response.Down
 	return &response.DownloadFileLinkResponse{DownloadLink: file.DownloadURL}
 }
 
-func (m FileMapper) FromCreateFileResponce(fileRequest request.CreateFileRequest) entity.File {
+func (m FileMapper) FromCreateFileResponse(fileRequest *request.CreateFileRequest) entity.File {
 	return entity.File{
 		Filename: fileRequest.Filename,
 		Size:     fileRequest.Size,

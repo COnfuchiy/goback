@@ -48,8 +48,8 @@ func (m WorkSpaceMiddleware) Handle() gin.HandlerFunc {
 			return
 		}
 
-		user, isUser := userObject.(*entity.User)
-		if !isUser {
+		user, _ := userObject.(*entity.User)
+		if reflect.ValueOf(user).IsNil() {
 			context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 			context.Abort()
 			return
