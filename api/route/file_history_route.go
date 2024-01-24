@@ -9,5 +9,5 @@ import (
 
 func InitFileHistoryRoute(router *gin.RouterGroup, fileHistoryService services.IFileHistoryService, fileHistoryMapper mapper.IFileHistoryMapper) {
 	fileHistoryController := controller.NewFileHistoryController(fileHistoryService, fileHistoryMapper)
-	router.GET("/:workspace_id/:file_history_id", fileHistoryController.GetFileHistory)
+	router.GET("/:file_history_id", fileHistoryController.GetFileHistory)
 }

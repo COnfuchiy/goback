@@ -25,6 +25,20 @@ func NewFileController(userService services.IUserService, fileHistoryService ser
 	return &FileController{userService, fileHistoryService, fileService, fileStorageService, workspaceService, fileMapper}
 }
 
+// Create godoc
+// @Summary	create file
+// @Description	upload file by user
+// @Tags file
+// @Accept mpfd
+// @Param workspace_id path int true "workspace id"
+// @Param filename formData string true "filename"
+// @Param size formData string true "file size"
+// @Param file formData file true "File to be uploaded"
+// @Produce json
+// @Success 200 {object} response.FileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/create [post]
 func (c FileController) Create(context *gin.Context) {
 	var req request.CreateFileRequest
 
@@ -91,6 +105,17 @@ func (c FileController) Create(context *gin.Context) {
 	context.JSON(http.StatusOK, c.fileMapper.ToFileResponse(&file))
 }
 
+// GetFileDownloadLink godoc
+// @Summary	get file download link
+// @Description	get file download link
+// @Tags file
+// @Param workspace_id path int true "workspace id"
+// @Param file_id path int true "file id"
+// @Produce json
+// @Success 200 {object} response.DownloadFileLinkResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/{file_id}/get-file-download-link [get]
 func (c FileController) GetFileDownloadLink(context *gin.Context) {
 
 	fileID := context.Param("file_id")
@@ -113,6 +138,17 @@ func (c FileController) GetFileDownloadLink(context *gin.Context) {
 	context.JSON(http.StatusOK, c.fileMapper.ToDownloadFileLinkResponse(file))
 }
 
+// CheckFilenameExisting godoc
+// @Summary	check filename existing
+// @Description	check filename existing
+// @Tags file
+// @Param workspace_id path int true "workspace id"
+// @Param filename query string true "checking filename"
+// @Produce json
+// @Success 200 {object} response.CheckFileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/check-filename-existing [get]
 func (c FileController) CheckFilenameExisting(context *gin.Context) {
 	filename := context.Query("filename")
 	if filename == "" {

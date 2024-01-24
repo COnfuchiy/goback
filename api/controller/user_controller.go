@@ -23,6 +23,14 @@ func NewUserController(userService services.IUserService, workspaceService servi
 	return &UserController{userService, workspaceService, userMapper, workspaceMapper, paginateMapper}
 }
 
+// Profile godoc
+// @Summary	get user profile
+// @Description	get user profile
+// @Tags user
+// @Produce json
+// @Success 200 {object} response.ProfileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/profile [get]
 func (c UserController) Profile(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")
@@ -40,6 +48,15 @@ func (c UserController) Profile(context *gin.Context) {
 	context.JSON(http.StatusOK, c.userMapper.ToProfileResponse(user))
 }
 
+// GetAllWorkspaces godoc
+// @Summary	get all user workspace (created and invited)
+// @Description	get all user workspace (created and invited)
+// @Param page query int false "page number"
+// @Tags user
+// @Produce json
+// @Success 200 {object} response.WorkspacesResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/get-all-workspaces [get]
 func (c UserController) GetAllWorkspaces(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")

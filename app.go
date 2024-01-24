@@ -3,13 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"goback/api/route"
 	"goback/bootstrap"
+	docs "goback/docs"
 	"goback/domain/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 )
+
+// @BasePath /api/v1
 
 type App struct {
 	db  *gorm.DB
@@ -20,9 +25,14 @@ type App struct {
 func NewApp() *App {
 	app := App{}
 	app.env = bootstrap.NewEnv()
+
 	app.setupDatabase()
 	app.setupServer()
 	app.setupRoutes()
+
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	app.gin.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	return &app
 }
 
