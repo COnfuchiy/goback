@@ -24,6 +24,16 @@ func NewWorkspaceController(workspaceService services.IWorkspaceService, fileHis
 	return &WorkspaceController{workspaceService, fileHistoryService, workspaceMapper, fileHistoryMapper, paginateMapper}
 }
 
+// CreateWorkspace godoc
+// @Summary	create workspace
+// @Description	create workspace
+// @Param name formData string true "workspace name"
+// @Tags workspace
+// @Produce json
+// @Success 200 {object} response.WorkspaceResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/create [post]
 func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 	var req request.CreateWorkspaceRequest
 
@@ -39,8 +49,8 @@ func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 		return
 	}
 
-	user, isUser := userObject.(*entity.User)
-	if !isUser {
+	user, _ := userObject.(*entity.User)
+	if reflect.ValueOf(user).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 		return
 	}
@@ -58,6 +68,15 @@ func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 	context.JSON(http.StatusOK, c.workspaceMapper.ToWorkspaceResponse(newWorkspace))
 }
 
+// GetWorkspace godoc
+// @Summary	get workspace
+// @Description	get workspace
+// @Tags workspace
+// @Param workspace_id path int true "workspace id"
+// @Produce json
+// @Success 200 {object} response.WorkspaceResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id} [get]
 func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 
 	workspaceObject, isWorkspaceExist := context.Get("workspace")
@@ -66,8 +85,8 @@ func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 		return
 	}
 
-	workspace, isWorkspace := workspaceObject.(*entity.Workspace)
-	if !isWorkspace {
+	workspace, _ := workspaceObject.(*entity.Workspace)
+	if reflect.ValueOf(workspace).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "Workspace is not type of " + reflect.TypeOf(entity.Workspace{}).String()})
 		return
 	}
@@ -75,6 +94,15 @@ func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 	context.JSON(http.StatusOK, c.workspaceMapper.ToWorkspaceResponse(workspace))
 }
 
+// GetAllFilesHistories godoc
+// @Summary	get all files histories
+// @Description	get all files histories
+// @Tags workspace
+// @Param workspace_id path int true "workspace id"
+// @Produce json
+// @Success 200 {object} response.WorkspacesResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file-histories [get]
 func (c WorkspaceController) GetAllFilesHistories(context *gin.Context) {
 
 	workspaceObject, isWorkspaceExist := context.Get("workspace")
@@ -83,20 +111,20 @@ func (c WorkspaceController) GetAllFilesHistories(context *gin.Context) {
 		return
 	}
 
-	workspace, isWorkspace := workspaceObject.(*entity.Workspace)
-	if !isWorkspace {
+	workspace, _ := workspaceObject.(*entity.Workspace)
+	if reflect.ValueOf(workspace).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "Workspace is not type of " + reflect.TypeOf(entity.Workspace{}).String()})
 		return
 	}
 
-	currentPage := 0
+	currentPage := 1
 	currentPageAsString := context.Param("page")
 
 	if currentPageAsString != "" {
 		var castError error
 		currentPage, castError = strconv.Atoi(currentPageAsString)
 		if castError != nil {
-			currentPage = 0
+			currentPage = 1
 		}
 	}
 

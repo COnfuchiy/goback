@@ -9,7 +9,7 @@ import (
 type IFileHistoryService interface {
 	Create(fileHistory *entity.FileHistory) error
 	GetAllByWorkspaceID(workspaceID uuid.UUID, currentPage int) ([]entity.FileHistory, int64, error)
-	GetFileHistoryFromContext(contextFileHistoryID string) (*entity.FileHistory, error)
+	GetFromContext(contextFileHistoryID string) (*entity.FileHistory, error)
 }
 
 type FileHistoryService struct {
@@ -30,7 +30,7 @@ func (s FileHistoryService) GetAllByWorkspaceID(workspaceID uuid.UUID, currentPa
 	return s.fileHistoryRepository.FindAllByWorkspaceID(workspaceID, offset, limit)
 }
 
-func (s FileHistoryService) GetFileHistoryFromContext(contextFileHistoryID string) (*entity.FileHistory, error) {
+func (s FileHistoryService) GetFromContext(contextFileHistoryID string) (*entity.FileHistory, error) {
 	fileHistoryID, err := uuid.Parse(contextFileHistoryID)
 	if err != nil {
 		return nil, err

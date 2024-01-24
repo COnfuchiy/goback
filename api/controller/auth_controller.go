@@ -19,6 +19,17 @@ func NewAuthController(userService services.IUserService, authService services.I
 	return &AuthController{userService, authService, userMapper}
 }
 
+// Login godoc
+// @Summary	login user
+// @Description	log in user in system
+// @Tags auth
+// @Accept x-www-form-urlencoded
+// @Param email formData string true "email" Format(email)
+// @Param password formData string true "password"
+// @Produce json
+// @Success 200 {object} response.LoginResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /login [post]
 func (c AuthController) Login(context *gin.Context) {
 
 	var req request.LoginRequest
@@ -53,6 +64,18 @@ func (c AuthController) Login(context *gin.Context) {
 	})
 }
 
+// Register godoc
+// @Summary	register user
+// @Description	register user in system
+// @Tags auth
+// @Accept x-www-form-urlencoded
+// @Param email formData string true "email" Format(email)
+// @Param username formData string true "username"
+// @Param password formData string true "password"
+// @Produce json
+// @Success 200 {object} response.RegisterResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /register [post]
 func (c AuthController) Register(context *gin.Context) {
 	var req request.RegisterRequest
 
@@ -95,6 +118,16 @@ func (c AuthController) Register(context *gin.Context) {
 	})
 }
 
+// RefreshToken godoc
+// @Summary	refresh user
+// @Description	get refreshed user refresh token
+// @Tags auth
+// @Accept x-www-form-urlencoded
+// @Param refresh_token formData string true "refresh token"
+// @Produce json
+// @Success 200 {object} response.RegisterResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /refresh [post]
 func (c AuthController) RefreshToken(context *gin.Context) {
 	var req request.RefreshTokenRequest
 

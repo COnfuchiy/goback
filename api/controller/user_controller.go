@@ -23,6 +23,14 @@ func NewUserController(userService services.IUserService, workspaceService servi
 	return &UserController{userService, workspaceService, userMapper, workspaceMapper, paginateMapper}
 }
 
+// Profile godoc
+// @Summary	get user profile
+// @Description	get user profile
+// @Tags user
+// @Produce json
+// @Success 200 {object} response.ProfileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/profile [get]
 func (c UserController) Profile(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")
@@ -31,8 +39,8 @@ func (c UserController) Profile(context *gin.Context) {
 		return
 	}
 
-	user, isUser := userObject.(*entity.User)
-	if !isUser {
+	user, _ := userObject.(*entity.User)
+	if reflect.ValueOf(user).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 		return
 	}
@@ -40,6 +48,15 @@ func (c UserController) Profile(context *gin.Context) {
 	context.JSON(http.StatusOK, c.userMapper.ToProfileResponse(user))
 }
 
+// GetAllWorkspaces godoc
+// @Summary	get all user workspace (created and invited)
+// @Description	get all user workspace (created and invited)
+// @Param page query int false "page number"
+// @Tags user
+// @Produce json
+// @Success 200 {object} response.WorkspacesResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/get-all-workspaces [get]
 func (c UserController) GetAllWorkspaces(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")
@@ -48,15 +65,14 @@ func (c UserController) GetAllWorkspaces(context *gin.Context) {
 		return
 	}
 
-	user, isUser := userObject.(*entity.User)
-	if !isUser {
+	user, _ := userObject.(*entity.User)
+	if reflect.ValueOf(user).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 		return
 	}
 
 	currentPage := 1
-	currentPageAsString := context.Param("page")
-
+	currentPageAsString := context.Query("page")
 	if currentPageAsString != "" {
 		var castError error
 		currentPage, castError = strconv.Atoi(currentPageAsString)
@@ -71,13 +87,13 @@ func (c UserController) GetAllWorkspaces(context *gin.Context) {
 		return
 	}
 
-	var workspacesResponce response.WorkspacesResponse
+	var workspacesResponse response.WorkspacesResponse
 
 	for _, workspace := range workspaces {
-		workspacesResponce.Workspaces = append(workspacesResponce.Workspaces, *c.workspaceMapper.ToWorkspaceResponse(&workspace))
+		workspacesResponse.Workspaces = append(workspacesResponse.Workspaces, *c.workspaceMapper.ToWorkspaceResponse(&workspace))
 	}
 
-	workspacesResponce.Pagination = *c.paginateMapper.ToPaginationResponse(totalCount, currentPage)
+	workspacesResponse.Pagination = *c.paginateMapper.ToPaginationResponse(totalCount, currentPage)
 
-	context.JSON(http.StatusOK, workspacesResponce)
+	context.JSON(http.StatusOK, workspacesResponse)
 }

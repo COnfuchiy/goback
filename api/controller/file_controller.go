@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"goback/api/request"
 	"goback/api/response"
 	"goback/domain/entity"
@@ -24,6 +25,20 @@ func NewFileController(userService services.IUserService, fileHistoryService ser
 	return &FileController{userService, fileHistoryService, fileService, fileStorageService, workspaceService, fileMapper}
 }
 
+// Create godoc
+// @Summary	create file
+// @Description	upload file by user
+// @Tags file
+// @Accept mpfd
+// @Param workspace_id path int true "workspace id"
+// @Param filename formData string true "filename"
+// @Param size formData string true "file size"
+// @Param file formData file true "File to be uploaded"
+// @Produce json
+// @Success 200 {object} response.FileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/create [post]
 func (c FileController) Create(context *gin.Context) {
 	var req request.CreateFileRequest
 
@@ -39,8 +54,8 @@ func (c FileController) Create(context *gin.Context) {
 		context.Abort()
 	}
 
-	user, isUser := userObject.(*entity.User)
-	if !isUser {
+	user, _ := userObject.(*entity.User)
+	if reflect.ValueOf(user).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "User is not type of " + reflect.TypeOf(entity.User{}).String()})
 		context.Abort()
 	}
@@ -51,8 +66,8 @@ func (c FileController) Create(context *gin.Context) {
 		return
 	}
 
-	workspace, isWorkspace := workspaceObject.(*entity.Workspace)
-	if !isWorkspace {
+	workspace, _ := workspaceObject.(*entity.Workspace)
+	if reflect.ValueOf(workspace).IsNil() {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "Workspace is not type of " + reflect.TypeOf(entity.Workspace{}).String()})
 		return
 	}
@@ -73,7 +88,7 @@ func (c FileController) Create(context *gin.Context) {
 		return
 	}
 
-	file := c.fileMapper.FromCreateFileResponce(req)
+	file := c.fileMapper.FromCreateFileResponse(&req)
 	file.FileHistoryID = newFileHistory.ID
 	file.FileHistory = newFileHistory
 	file.UserId = user.ID
@@ -90,10 +105,26 @@ func (c FileController) Create(context *gin.Context) {
 	context.JSON(http.StatusOK, c.fileMapper.ToFileResponse(&file))
 }
 
+// GetFileDownloadLink godoc
+// @Summary	get file download link
+// @Description	get file download link
+// @Tags file
+// @Param workspace_id path int true "workspace id"
+// @Param file_id path int true "file id"
+// @Produce json
+// @Success 200 {object} response.DownloadFileLinkResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/{file_id}/get-file-download-link [get]
 func (c FileController) GetFileDownloadLink(context *gin.Context) {
 
 	fileID := context.Param("file_id")
-	if fileID == "" {
+	if fileID != "" {
+		if _, err := uuid.Parse(fileID); err != nil {
+			context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "File ID is not uuid"})
+			return
+		}
+	} else {
 		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "File ID is not specified"})
 		return
 	}
@@ -107,16 +138,25 @@ func (c FileController) GetFileDownloadLink(context *gin.Context) {
 	context.JSON(http.StatusOK, c.fileMapper.ToDownloadFileLinkResponse(file))
 }
 
+// CheckFilenameExisting godoc
+// @Summary	check filename existing
+// @Description	check filename existing
+// @Tags file
+// @Param workspace_id path int true "workspace id"
+// @Param filename query string true "checking filename"
+// @Produce json
+// @Success 200 {object} response.CheckFileResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 500 {object} response.ErrorResponse
+// @Router /workspace/{workspace_id}/file/check-filename-existing [get]
 func (c FileController) CheckFilenameExisting(context *gin.Context) {
-	var req request.CheckFileRequest
-
-	err := context.ShouldBind(&req)
-	if err != nil {
-		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: err.Error()})
+	filename := context.Query("filename")
+	if filename == "" {
+		context.JSON(http.StatusBadRequest, response.ErrorResponse{Message: "no filename provides"})
 		return
 	}
 
-	isFileExist, err := c.fileService.CheckExisting(req.Filename)
+	isFileExist, err := c.fileService.CheckExisting(filename)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, response.ErrorResponse{Message: err.Error()})
 		return

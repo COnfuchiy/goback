@@ -1,0 +1,452 @@
+definitions:
+  response.CheckFileResponse:
+    properties:
+      is_file_exist:
+        type: boolean
+    type: object
+  response.DownloadFileLinkResponse:
+    properties:
+      download_link:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  response.FileHistoryResponse:
+    properties:
+      files:
+        items:
+          $ref: '#/definitions/response.FileResponse'
+        type: array
+      id:
+        type: string
+    type: object
+  response.FileResponse:
+    properties:
+      created_at:
+        type: string
+      download_url:
+        type: string
+      filename:
+        type: string
+      id:
+        type: string
+      size:
+        type: integer
+      tag:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/response.ProfileResponse'
+    type: object
+  response.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.PaginationResponse:
+    properties:
+      current_page:
+        type: integer
+      next_page:
+        type: integer
+      prev_page:
+        type: integer
+      total_entities:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.ProfileResponse:
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+    type: object
+  response.RegisterResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.WorkspaceResponse:
+    properties:
+      creator:
+        $ref: '#/definitions/response.ProfileResponse'
+      id:
+        type: string
+      name:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/response.ProfileResponse'
+        type: array
+    type: object
+  response.WorkspacesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/response.WorkspaceResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/response.PaginationResponse'
+    type: object
+info:
+  contact: {}
+paths:
+  /login:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: log in user in system
+      parameters:
+      - description: email
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: login user
+      tags:
+      - auth
+  /refresh:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: get refreshed user refresh token
+      parameters:
+      - description: refresh token
+        in: formData
+        name: refresh_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: refresh user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: register user in system
+      parameters:
+      - description: email
+        format: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: register user
+      tags:
+      - auth
+  /user/get-all-workspaces:
+    get:
+      description: get all user workspace (created and invited)
+      parameters:
+      - description: page number
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WorkspacesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get all user workspace (created and invited)
+      tags:
+      - user
+  /user/profile:
+    get:
+      description: get user profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get user profile
+      tags:
+      - user
+  /workspace/{workspace_id}:
+    get:
+      description: get workspace
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WorkspaceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get workspace
+      tags:
+      - workspace
+  /workspace/{workspace_id}/file-histories:
+    get:
+      description: get all files histories
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WorkspacesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get all files histories
+      tags:
+      - workspace
+  /workspace/{workspace_id}/file-history/{file_history_id}:
+    get:
+      description: get all file versions
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: workspace id
+        in: path
+        name: file_history_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FileHistoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get file history
+      tags:
+      - file
+  /workspace/{workspace_id}/file/{file_id}/get-file-download-link:
+    get:
+      description: get file download link
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: file id
+        in: path
+        name: file_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.DownloadFileLinkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: get file download link
+      tags:
+      - file
+  /workspace/{workspace_id}/file/check-filename-existing:
+    get:
+      description: check filename existing
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: checking filename
+        in: query
+        name: filename
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CheckFileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: check filename existing
+      tags:
+      - file
+  /workspace/{workspace_id}/file/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: upload file by user
+      parameters:
+      - description: workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: filename
+        in: formData
+        name: filename
+        required: true
+        type: string
+      - description: file size
+        in: formData
+        name: size
+        required: true
+        type: string
+      - description: File to be uploaded
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.FileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: create file
+      tags:
+      - file
+  /workspace/create:
+    post:
+      description: create workspace
+      parameters:
+      - description: workspace name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.WorkspaceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: create workspace
+      tags:
+      - workspace
+swagger: "2.0"
