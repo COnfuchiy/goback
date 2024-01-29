@@ -22,13 +22,14 @@ func NewFileHistoryController(fileHistoryService services.IFileHistoryService, f
 // @Summary	get file history
 // @Description	get all file versions
 // @Tags file
-// @Param workspace_id path int true "workspace id"
-// @Param file_history_id path int true "workspace id"
+// @Param workspace_id path string true "workspace id"
+// @Param file_history_id path string true "workspace id"
 // @Produce json
 // @Success 200 {object} response.FileHistoryResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /workspace/{workspace_id}/file-history/{file_history_id} [get]
+// @Security Bearer
 func (c FileHistoryController) GetFileHistory(context *gin.Context) {
 
 	fileHistoryID := context.Param("file_history_id")

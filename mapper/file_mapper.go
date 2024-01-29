@@ -22,12 +22,13 @@ func NewFileMapper(userMapper IUserMapper) IFileMapper {
 
 func (m FileMapper) ToFileResponse(file *entity.File) *response.FileResponse {
 	return &response.FileResponse{
+		ID:          file.ID.String(),
 		Filename:    file.Filename,
 		Tag:         file.Tag,
 		Size:        file.Size,
 		DownloadURL: file.DownloadURL,
-		CreatedAt:   file.CreatedAt.Format("YYYY-MM-DD hh:mm:ss"),
-		UpdatedAt:   file.UpdatedAt.Format("YYYY-MM-DD hh:mm:ss"),
+		CreatedAt:   file.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   file.UpdatedAt.Format("2006-01-02 15:04:05"),
 		User:        *m.userMapper.ToProfileResponse(&file.User),
 	}
 }

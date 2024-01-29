@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   response.CheckFileResponse:
     properties:
@@ -13,6 +14,15 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  response.FileHistoriesResponse:
+    properties:
+      file_histories:
+        items:
+          $ref: '#/definitions/response.FileHistoryResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/response.PaginationResponse'
     type: object
   response.FileHistoryResponse:
     properties:
@@ -197,7 +207,26 @@ paths:
       summary: register user
       tags:
       - auth
-  /user/get-all-workspaces:
+  /user/profile:
+    get:
+      description: get user profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: get user profile
+      tags:
+      - user
+  /user/workspaces:
     get:
       description: get all user workspace (created and invited)
       parameters:
@@ -216,24 +245,9 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: get all user workspace (created and invited)
-      tags:
-      - user
-  /user/profile:
-    get:
-      description: get user profile
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.ProfileResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: get user profile
       tags:
       - user
   /workspace/{workspace_id}:
@@ -244,7 +258,7 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -256,6 +270,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: get workspace
       tags:
       - workspace
@@ -267,18 +283,20 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.WorkspacesResponse'
+            $ref: '#/definitions/response.FileHistoriesResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: get all files histories
       tags:
       - workspace
@@ -290,12 +308,12 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       - description: workspace id
         in: path
         name: file_history_id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -311,6 +329,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: get file history
       tags:
       - file
@@ -322,12 +342,12 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       - description: file id
         in: path
         name: file_id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -343,6 +363,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: get file download link
       tags:
       - file
@@ -354,7 +376,7 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       - description: checking filename
         in: query
         name: filename
@@ -375,6 +397,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: check filename existing
       tags:
       - file
@@ -388,7 +412,7 @@ paths:
         in: path
         name: workspace_id
         required: true
-        type: integer
+        type: string
       - description: filename
         in: formData
         name: filename
@@ -419,6 +443,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: create file
       tags:
       - file
@@ -446,7 +472,15 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - Bearer: []
       summary: create workspace
       tags:
       - workspace
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

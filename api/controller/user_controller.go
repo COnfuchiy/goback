@@ -31,6 +31,7 @@ func NewUserController(userService services.IUserService, workspaceService servi
 // @Success 200 {object} response.ProfileResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /user/profile [get]
+// @Security Bearer
 func (c UserController) Profile(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")
@@ -56,7 +57,8 @@ func (c UserController) Profile(context *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.WorkspacesResponse
 // @Failure 400 {object} response.ErrorResponse
-// @Router /user/get-all-workspaces [get]
+// @Router /user/workspaces [get]
+// @Security Bearer
 func (c UserController) GetAllWorkspaces(context *gin.Context) {
 
 	userObject, isUserExist := context.Get("user")

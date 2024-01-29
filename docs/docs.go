@@ -152,8 +152,44 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/get-all-workspaces": {
+        "/user/profile": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "get user profile",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "get user profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ProfileResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/workspaces": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "get all user workspace (created and invited)",
                 "produces": [
                     "application/json"
@@ -186,34 +222,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/profile": {
-            "get": {
-                "description": "get user profile",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "get user profile",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ProfileResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/workspace/create": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "create workspace",
                 "produces": [
                     "application/json"
@@ -255,6 +270,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "get workspace",
                 "produces": [
                     "application/json"
@@ -265,7 +285,7 @@ const docTemplate = `{
                 "summary": "get workspace",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
@@ -290,6 +310,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}/file-histories": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "get all files histories",
                 "produces": [
                     "application/json"
@@ -300,7 +325,7 @@ const docTemplate = `{
                 "summary": "get all files histories",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
@@ -311,7 +336,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/response.WorkspacesResponse"
+                            "$ref": "#/definitions/response.FileHistoriesResponse"
                         }
                     },
                     "400": {
@@ -325,6 +350,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}/file-history/{file_history_id}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "get all file versions",
                 "produces": [
                     "application/json"
@@ -335,14 +365,14 @@ const docTemplate = `{
                 "summary": "get file history",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "file_history_id",
                         "in": "path",
@@ -373,6 +403,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}/file/check-filename-existing": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "check filename existing",
                 "produces": [
                     "application/json"
@@ -383,7 +418,7 @@ const docTemplate = `{
                 "summary": "check filename existing",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
@@ -421,6 +456,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}/file/create": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "upload file by user",
                 "consumes": [
                     "multipart/form-data"
@@ -434,7 +474,7 @@ const docTemplate = `{
                 "summary": "create file",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
@@ -486,6 +526,11 @@ const docTemplate = `{
         },
         "/workspace/{workspace_id}/file/{file_id}/get-file-download-link": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "get file download link",
                 "produces": [
                     "application/json"
@@ -496,14 +541,14 @@ const docTemplate = `{
                 "summary": "get file download link",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "workspace id",
                         "name": "workspace_id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "file id",
                         "name": "file_id",
                         "in": "path",
@@ -555,6 +600,20 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "response.FileHistoriesResponse": {
+            "type": "object",
+            "properties": {
+                "file_histories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.FileHistoryResponse"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/response.PaginationResponse"
                 }
             }
         },
@@ -694,6 +753,14 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
@@ -701,7 +768,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "",
 	Description:      "",

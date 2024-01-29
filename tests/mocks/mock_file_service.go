@@ -3,10 +3,16 @@ package mocks
 import (
 	"github.com/stretchr/testify/mock"
 	"goback/domain/entity"
+	"mime/multipart"
 )
 
 type MockFileService struct {
 	mock.Mock
+}
+
+func (mock *MockFileService) GetFileTag(file *entity.File, fileObject *multipart.FileHeader) error {
+	// TODO implement me
+	panic("implement me")
 }
 
 func (mock *MockFileService) Create(file *entity.File) error {

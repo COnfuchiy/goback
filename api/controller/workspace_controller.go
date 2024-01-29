@@ -34,6 +34,7 @@ func NewWorkspaceController(workspaceService services.IWorkspaceService, fileHis
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 500 {object} response.ErrorResponse
 // @Router /workspace/create [post]
+// @Security Bearer
 func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 	var req request.CreateWorkspaceRequest
 
@@ -72,11 +73,12 @@ func (c WorkspaceController) CreateWorkspace(context *gin.Context) {
 // @Summary	get workspace
 // @Description	get workspace
 // @Tags workspace
-// @Param workspace_id path int true "workspace id"
+// @Param workspace_id path string true "workspace id"
 // @Produce json
 // @Success 200 {object} response.WorkspaceResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /workspace/{workspace_id} [get]
+// @Security Bearer
 func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 
 	workspaceObject, isWorkspaceExist := context.Get("workspace")
@@ -98,11 +100,12 @@ func (c WorkspaceController) GetWorkspace(context *gin.Context) {
 // @Summary	get all files histories
 // @Description	get all files histories
 // @Tags workspace
-// @Param workspace_id path int true "workspace id"
+// @Param workspace_id path string true "workspace id"
 // @Produce json
-// @Success 200 {object} response.WorkspacesResponse
+// @Success 200 {object} response.FileHistoriesResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Router /workspace/{workspace_id}/file-histories [get]
+// @Security Bearer
 func (c WorkspaceController) GetAllFilesHistories(context *gin.Context) {
 
 	workspaceObject, isWorkspaceExist := context.Get("workspace")

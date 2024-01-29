@@ -27,7 +27,9 @@ func (r FileHistoryRepository) Create(fileHistory *entity.FileHistory) error {
 func (r FileHistoryRepository) FindByID(id uuid.UUID) (*entity.FileHistory, error) {
 	var fileHistory entity.FileHistory
 
-	err := r.db.Model(&entity.FileHistory{}).Where("id = ?", id).Preload("Files").First(&fileHistory).Error
+	err := r.db.Model(&entity.FileHistory{}).Where("id = ?", id).Preload("Files", func(db *gorm.DB) *gorm.DB {
+		return db.Preload("User")
+	}).First(&fileHistory).Error
 
 	return &fileHistory, err
 }
@@ -38,7 +40,7 @@ func (r FileHistoryRepository) FindAllByWorkspaceID(workspaceID uuid.UUID, offse
 
 	err := r.db.Model(&entity.FileHistory{}).Where("workspace_id = ?", workspaceID).Preload("Files",
 		func(db *gorm.DB) *gorm.DB {
-			return db.Preload("User").Order("files.created_at DESC").Limit(1)
+			return db.Preload("User").Order("files.created_at DESC")
 		}).Offset(offset).Limit(limit).Count(&totalCount).Find(&fileHistories).Error
 	return fileHistories, totalCount, err
 }

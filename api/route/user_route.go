@@ -11,5 +11,5 @@ func InitUserRoute(router *gin.RouterGroup, userService services.IUserService, w
 	userController := controller.NewUserController(userService, workspaceService, userMapper, workspaceMapper, paginateMapper)
 
 	router.GET("/profile", userController.Profile)
-	router.GET("/get-all-workspaces", userController.GetAllWorkspaces)
+	router.GET("/workspaces", userController.GetAllWorkspaces)
 }
